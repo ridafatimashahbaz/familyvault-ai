@@ -13,7 +13,7 @@
 [build]
 base = "."
   command = "npm run build:pwa"
-  publish = "pwa/out"
+  publish = ".next"
 
 [build.environment]
   # Next.js 16 needs Node 20.9+; 22 is Netlify's current LTS.
