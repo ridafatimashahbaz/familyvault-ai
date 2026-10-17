@@ -1,14 +1,5 @@
-# Netlify configuration for the FamilyVault PWA.
-#
-# The published site is the browser-encrypted vault built from ./pwa — a static
-# export with no server runtime, no API routes and no database. Netlify only
-# hosts files here; it never sees a document, a passphrase or a key.
-#
-# The server-side app in ./src is NOT deployed by this configuration.
-#
-# Manual equivalent, from the repository root:
-#   npm run build:pwa
-#   npx netlify deploy --prod --dir=pwa/out
+# Netlify configuration for the Next.js application in ./src.
+# The separate static PWA can be built with npm run build:pwa.
 
 
 [build]
@@ -19,12 +10,15 @@
 [build.environment]
   NODE_VERSION = "22"
   # Public configuration values also occur in documentation and dependencies.
-  # Omit only these non-secret keys; keep scanning all paths and credentials.
+  # Omit only these non-secret keys; keep scanning credentials elsewhere.
   SECRETS_SCAN_OMIT_KEYS = "SITE_ADDRESS,AI_PROVIDER"
+  # Exclude generated server artifacts reported by the Next.js adapter scan.
+  # Keep source files, public assets and browser bundles in the scan, including
+  # the static assets within the standalone output.
+  SECRETS_SCAN_OMIT_PATHS = ".netlify/.next/server/**,.netlify/.next/standalone/.next/server/**"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
 
-# Security headers are shipped as a real file (pwa/public/_headers → pwa/out/_headers)
-# so they apply to local previews too, and Netlify picks them up from the publish root.
+# Application security headers are configured in next.config.ts.
