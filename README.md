@@ -143,6 +143,20 @@ cd backend  && npm start       # runs the Express server directly (no build step
 
 ## 9. Deployment
 
+**Frontend → Netlify**
+- Import the repository. The root `netlify.toml` sets the base directory to `frontend/`,
+  the build command to `npm ci --include=dev && npm run build`, and the publish directory to
+  `dist` within `frontend/`.
+- Netlify installs dependencies from `frontend/package.json` and uses its committed lockfile.
+  The build explicitly installs development dependencies, including Vite, before compiling,
+  so it also works when the deploy runner has not installed dependencies beforehand.
+  No root `package.json` is needed.
+- Add the three frontend `VITE_*` environment variables from section 4 in Netlify, with
+  `VITE_API_URL` pointing to the deployed Express backend, then deploy.
+- The configuration includes a fallback to `index.html` for React Router page URLs.
+- Deploy the backend separately as described below and include the Netlify frontend URL in
+  its `FRONTEND_ORIGIN` setting.
+
 **Frontend → Vercel**
 - Import the repo, set the project root to `frontend/`.
 - Build command `npm run build`, output directory `dist` (Vercel's Vite preset does this
