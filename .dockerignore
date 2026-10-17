@@ -1,0 +1,30 @@
+# Keep the build context small and never bake local state or secrets in.
+.git
+.gitignore
+node_modules
+.next
+npm-debug.log*
+*.log
+
+# Local secrets and data
+.env
+.env.local
+.env.*.local
+storage
+tmp
+
+# Never ship a developer's local database or backups
+prisma/*.db
+prisma/*.db-journal
+prisma/*.db-wal
+prisma/*.db-shm
+*.sqlite
+*.sqlite3
+
+# Docs and editor cruft
+docs
+README.md
+.github
+.vscode
+.idea
+*.md

@@ -1,0 +1,205 @@
+{
+  "measuredAt": "2026-10-16T17:42:22.374Z",
+  "engine": "tesseract.js LSTM_ONLY with eng.traineddata (same engine and language file the app loads in the browser; driven through the Node worker here)",
+  "note": "Synthetic pen trajectories only. These are not human handwriting, so the handwritten numbers below describe this narrow synthetic set and must not be quoted as real-world handwriting accuracy.",
+  "summary": {
+    "allCases": {
+      "characterErrorRate": 0.0522,
+      "wordErrorRate": 0.2182
+    },
+    "syntheticPenStrokes": {
+      "cases": 6,
+      "characterErrorRate": 0.0608,
+      "wordErrorRate": 0.2546
+    },
+    "printedControl": {
+      "cases": 1,
+      "characterErrorRate": 0,
+      "wordErrorRate": 0
+    },
+    "expiryDatesSuggested": 6,
+    "expiryDatesNotInReference": 0
+  },
+  "cases": [
+    {
+      "id": "pen-clear",
+      "kind": "synthetic-pen-strokes",
+      "characterErrorRate": 0,
+      "wordErrorRate": 0,
+      "characterEdits": "0/92",
+      "wordEdits": "0/13",
+      "datesFound": [
+        {
+          "role": "appointment",
+          "iso": "2026-11-18",
+          "precision": "day",
+          "reviewRequired": false
+        },
+        {
+          "role": "followUp",
+          "iso": "2026-11-25",
+          "precision": "day",
+          "reviewRequired": false
+        },
+        {
+          "role": "expiry",
+          "iso": "2026-11-30",
+          "precision": "day",
+          "reviewRequired": false
+        }
+      ],
+      "expirySuggested": "2026-11-30",
+      "datesNotInReference": [],
+      "read": "Appointment: 18 November 2026\nFollow-up: 25 November 2026\nDocument expires: 30 November 2026"
+    },
+    {
+      "id": "pen-difficult",
+      "kind": "synthetic-pen-strokes",
+      "characterErrorRate": 0,
+      "wordErrorRate": 0,
+      "characterEdits": "0/92",
+      "wordEdits": "0/13",
+      "datesFound": [
+        {
+          "role": "appointment",
+          "iso": "2026-11-18",
+          "precision": "day",
+          "reviewRequired": false
+        },
+        {
+          "role": "followUp",
+          "iso": "2026-11-25",
+          "precision": "day",
+          "reviewRequired": false
+        },
+        {
+          "role": "expiry",
+          "iso": "2026-11-30",
+          "precision": "day",
+          "reviewRequired": false
+        }
+      ],
+      "expirySuggested": "2026-11-30",
+      "datesNotInReference": [],
+      "read": "Appointment: 18 November 2026\nFollow-up: 25 November 2026\nDocument expires: 30 November 2026"
+    },
+    {
+      "id": "pen-rotated",
+      "kind": "synthetic-pen-strokes",
+      "characterErrorRate": 0.0652,
+      "wordErrorRate": 0.3846,
+      "characterEdits": "6/92",
+      "wordEdits": "5/13",
+      "datesFound": [
+        {
+          "role": "appointment",
+          "iso": "2026-11-18",
+          "precision": "day",
+          "reviewRequired": false
+        },
+        {
+          "role": "expiry",
+          "iso": "2026-11-30",
+          "precision": "day",
+          "reviewRequired": false
+        }
+      ],
+      "expirySuggested": "2026-11-30",
+      "datesNotInReference": [],
+      "read": "Appointment. 18 November 2026\nFollow-up. 25 Novem bey 2026\nDocument expires: 30 Novempe, 2026"
+    },
+    {
+      "id": "pen-numeric",
+      "kind": "synthetic-pen-strokes",
+      "characterErrorRate": 0,
+      "wordErrorRate": 0,
+      "characterEdits": "0/74",
+      "wordEdits": "0/7",
+      "datesFound": [
+        {
+          "role": "expiry",
+          "iso": "2026-11-30",
+          "precision": "day",
+          "reviewRequired": false
+        },
+        {
+          "role": "appointment",
+          "iso": "2026-11-18",
+          "precision": "day",
+          "reviewRequired": false
+        },
+        {
+          "role": "followUp",
+          "iso": "2026-11-25",
+          "precision": "day",
+          "reviewRequired": false
+        }
+      ],
+      "expirySuggested": "2026-11-30",
+      "datesNotInReference": [],
+      "read": "Appointment: 18/11/2026\nFollow-up: 25-11-2026\nDocument expires: 2026-11-30"
+    },
+    {
+      "id": "pen-ambiguous",
+      "kind": "synthetic-pen-strokes",
+      "characterErrorRate": 0.0357,
+      "wordErrorRate": 0.2857,
+      "characterEdits": "2/56",
+      "wordEdits": "2/7",
+      "datesFound": [
+        {
+          "role": "expiry",
+          "iso": "2027-04-03",
+          "precision": "day",
+          "reviewRequired": true
+        }
+      ],
+      "expirySuggested": "2027-04-03",
+      "datesNotInReference": [],
+      "read": "Document expires: 03/04/2027\nFollow-up: 7\nAppointment: 7"
+    },
+    {
+      "id": "pen-illegible",
+      "kind": "synthetic-pen-strokes",
+      "characterErrorRate": 0.2642,
+      "wordErrorRate": 0.8571,
+      "characterEdits": "14/53",
+      "wordEdits": "6/7",
+      "datesFound": [],
+      "expirySuggested": null,
+      "datesNotInReference": [],
+      "read": "Document expres 777\nFollow-up 777\nAppontment 777"
+    },
+    {
+      "id": "printed-control",
+      "kind": "printed",
+      "characterErrorRate": 0,
+      "wordErrorRate": 0,
+      "characterEdits": "0/92",
+      "wordEdits": "0/13",
+      "datesFound": [
+        {
+          "role": "appointment",
+          "iso": "2026-11-18",
+          "precision": "day",
+          "reviewRequired": false
+        },
+        {
+          "role": "followUp",
+          "iso": "2026-11-25",
+          "precision": "day",
+          "reviewRequired": false
+        },
+        {
+          "role": "expiry",
+          "iso": "2026-11-30",
+          "precision": "day",
+          "reviewRequired": false
+        }
+      ],
+      "expirySuggested": "2026-11-30",
+      "datesNotInReference": [],
+      "read": "Appointment: 18 November 2026\nFollow-up: 25 November 2026\nDocument expires: 30 November 2026"
+    }
+  ]
+}

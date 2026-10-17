@@ -1,0 +1,25 @@
+# Netlify configuration for the Next.js application in ./src.
+# The separate static PWA can be built with npm run build:pwa.
+
+
+[build]
+  base = "."
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # Public configuration values also occur in documentation and dependencies.
+  # The app name is browser-visible, and the OCR engine is a dependency selector.
+  # Omit only these non-secret keys; keep scanning credentials elsewhere.
+  SECRETS_SCAN_OMIT_KEYS = "SITE_ADDRESS,AI_PROVIDER,NEXT_PUBLIC_APP_NAME,OCR_ENGINE"
+  # Exclude generated server artifacts reported by the Next.js adapter scan.
+  # Keep source files, public assets and browser bundles in the scan, including
+  # the static assets within the standalone output.
+  SECRETS_SCAN_OMIT_PATHS = ".netlify/.next/server/**,.netlify/.next/standalone/.next/server/**"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+
+# Application security headers are configured in next.config.ts.

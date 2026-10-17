@@ -1,0 +1,39 @@
+# Render Blueprint - deploys the Dockerfile as a web service with a persistent
+# disk for the SQLite database and the encrypted document store.
+#
+#   1. Push this repository to GitHub.
+#   2. Render dashboard -> New -> Blueprint -> pick the repo.
+#   3. Render generates AUTH_SECRET and DOCUMENT_ENCRYPTION_KEY for you.
+#
+# The disk is the important part: without it the vault would reset on every
+# deploy. Everything the app persists lives under /app/data.
+services:
+  - type: web
+    name: familyvault-ai
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: AUTH_TRUST_HTTPS
+        value: "true"
+      # Generated once and kept stable by Render. Rotating AUTH_SECRET logs
+      # every user out; rotating DOCUMENT_ENCRYPTION_KEY makes existing
+      # documents unreadable, so treat both as permanent.
+      - key: AUTH_SECRET
+        generateValue: true
+      - key: DOCUMENT_ENCRYPTION_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        value: file:/app/data/familyvault.db
+      - key: STORAGE_DIR
+        value: /app/data/storage
+      - key: OCR_LANG_PATH
+        value: /app/data/storage/ocr-lang
+    disk:
+      name: vault-data
+      mountPath: /app/data
+      sizeGB: 5

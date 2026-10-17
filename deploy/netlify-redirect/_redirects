@@ -1,0 +1,19 @@
+# Netlify redirect for FamilyVault AI.
+#
+# This site hosts NO application and NO data — it only forwards visitors to the
+# self-hosted instance on your own server. Replace the URL below with your
+# domain, then deploy this folder:
+#
+#   netlify deploy --prod --dir=deploy/netlify-redirect
+#
+# Every path is sent to the VPS with a permanent (301) redirect. The homepage is
+# served locally by index.html so the old link shows a short privacy notice
+# before forwarding.
+#
+# Learn more: https://docs.netlify.com/routing/redirects/
+
+# Root stays local (index.html) so the notice is visible.
+/        /index.html   200
+
+# Everything else → your self-hosted vault.
+/*       https://vault.example.com/:splat   301!

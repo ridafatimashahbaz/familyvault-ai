@@ -1,0 +1,85 @@
+# FamilyVault AI — self-hosted production stack.
+#
+# Two services:
+#   app   — the Next.js server (never exposed directly to the internet)
+#   caddy — TLS terminating reverse proxy, automatic HTTPS via Let's Encrypt
+#
+# Everything the household owns lives on the `vault-data` volume (SQLite +
+# encrypted documents). No third-party database or object storage is used.
+#
+#   1. cp .env.example .env   and fill in the secrets (see docs/DEPLOYMENT.md)
+#   2. set SITE_ADDRESS in .env to your domain
+#   3. docker compose up -d --build
+services:
+  app:
+    build: .
+    image: familyvault-ai:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      # Keep every writable path on the persistent volume.
+      DATABASE_URL: "file:/app/data/familyvault.db"
+      STORAGE_DIR: "/app/data/storage"
+      OCR_LANG_PATH: "/app/data/storage/ocr-lang"
+      NODE_ENV: "production"
+      HOSTNAME: "0.0.0.0"
+      PORT: "3000"
+    # Reachable only from the proxy on the internal network — never published.
+    expose:
+      - "3000"
+    volumes:
+      - vault-data:/app/data
+    # Least privilege: read-only root filesystem, no extra capabilities,
+    # no privilege escalation, bounded process count.
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /app/.next/cache
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    pids_limit: 256
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 25s
+    networks:
+      - vault
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      # Your public hostname (e.g. vault.example.com). Defaults to localhost,
+      # which Caddy serves over HTTPS with its own internal certificate.
+      SITE_ADDRESS: "${SITE_ADDRESS:-localhost}"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    networks:
+      - vault
+
+networks:
+  vault:
+
+volumes:
+  vault-data:
+  caddy-data:
+  caddy-config:
