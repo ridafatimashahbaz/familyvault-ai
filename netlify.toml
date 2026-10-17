@@ -18,6 +18,9 @@
 
 [build.environment]
   NODE_VERSION = "22"
+  # Public configuration values also occur in documentation and dependencies.
+  # Omit only these non-secret keys; keep scanning all paths and credentials.
+  SECRETS_SCAN_OMIT_KEYS = "SITE_ADDRESS,AI_PROVIDER"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
