@@ -11,6 +11,7 @@
 #   npx netlify deploy --prod --dir=pwa/out
 
 [build]
+base = "."
   command = "npm run build:pwa"
   publish = "pwa/out"
 
