@@ -10,14 +10,18 @@
 #   npm run build:pwa
 #   npx netlify deploy --prod --dir=pwa/out
 
+
 [build]
-base = "."
+  base = "."
   command = "npm run build"
   publish = ".next"
 
 [build.environment]
-  # Next.js 16 needs Node 20.9+; 22 is Netlify's current LTS.
   NODE_VERSION = "22"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
 
 # Security headers are shipped as a real file (pwa/public/_headers → pwa/out/_headers)
 # so they apply to local previews too, and Netlify picks them up from the publish root.
