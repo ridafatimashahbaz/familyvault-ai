@@ -1,0 +1,174 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// SQLite has no native enum type, so status/type columns are strings
+// constrained in application code (see src/lib/constants.ts).
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  familyMembers FamilyMember[]
+  documents     Document[]
+  tags          Tag[]
+  messages      AssistantMessage[]
+  vaultMaterial VaultMaterial?
+}
+
+// --- Local-first encrypted vault (Day 1, Phase 1) ---------------------------
+//
+// Opaque key material for the browser-side end-to-end vault. The server stores
+// only *wrapped* blobs: it never sees the passphrase, the vault key, the
+// passphrase-derived key or the recovery key, and it cannot decrypt anything.
+// One row per user (`userId` is unique). The column layout mirrors the exact
+// `VaultMaterial` shape in pwa/src/vault/types.ts; the two wrapped blobs are
+// stored as their JSON encodings and are treated as opaque text by the server.
+//
+// This model is additive and ships in its own migration. It does not touch the
+// existing Document/FamilyMember/Tag tables or any document workflow.
+model VaultMaterial {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  // --- KDF parameters (public; not secret) ---
+  kdfName       String
+  kdfHash       String
+  kdfIterations Int
+  kdfSalt       String // base64, 16 bytes
+
+  // --- vault creation time carried in the material ---
+  materialCreatedAt DateTime
+
+  // --- wrapped vault key, one blob per unwrap path (JSON of EncryptedBlob) ---
+  wrappedByPassphrase  String // purpose "vk:passphrase"
+  wrappedByRecoveryKey String // purpose "vk:recovery"
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model FamilyMember {
+  id        String    @id @default(cuid())
+  userId    String
+  name      String
+  relation  String    @default("other")
+  birthDate DateTime?
+  notes     String?
+  archived  Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documents Document[]
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model Document {
+  id             String    @id @default(cuid())
+  userId         String
+  familyMemberId String?
+
+  // --- stored file ---
+  originalName String
+  storageKey   String    @unique
+  mimeType     String
+  sizeBytes    Int
+  sha256       String
+  encrypted    Boolean   @default(true)
+  extension    String
+
+  // --- classification ---
+  title                    String
+  docType                  String    @default("unknown")
+  category                 String    @default("other")
+  classificationConfidence Float     @default(0)
+  classificationSource     String    @default("local")
+
+  // --- processing state ---
+  status       String    @default("queued")
+  errorMessage String?
+  processedAt  DateTime?
+
+  // --- OCR ---
+  ocrText       String?
+  ocrStatus     String    @default("pending")
+  ocrEngine     String?
+  ocrConfidence Float?
+
+  // --- AI output ---
+  summary       String?
+  summarySource String?
+  extractedData String? // JSON object as string
+
+  // --- dates ---
+  issueDate    DateTime?
+  expiryDate   DateTime?
+  expirySource String?
+  noExpiry     Boolean   @default(false)
+
+  notes     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyMember FamilyMember?  @relation(fields: [familyMemberId], references: [id], onDelete: SetNull)
+  tags         DocumentTag[]
+
+  @@index([userId, createdAt])
+  @@index([userId, category])
+  @@index([userId, docType])
+  @@index([userId, status])
+  @@index([userId, expiryDate])
+  @@index([familyMemberId])
+  @@index([userId, sha256])
+}
+
+model Tag {
+  id     String @id @default(cuid())
+  userId String
+  name   String
+
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documents DocumentTag[]
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model DocumentTag {
+  documentId String
+  tagId      String
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  tag      Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([documentId, tagId])
+  @@index([tagId])
+}
+
+model AssistantMessage {
+  id        String   @id @default(cuid())
+  userId    String
+  role      String // user | assistant
+  content   String
+  sources   String? // JSON array of document ids cited
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}

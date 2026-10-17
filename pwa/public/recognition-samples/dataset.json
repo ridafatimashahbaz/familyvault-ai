@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "provenance": "Synthetic pen trajectories authored for tests; not human handwriting, not a real family record. Printed control is explicitly separate. This narrow synthetic set does not validate natural handwriting accuracy.",
+  "cases": [
+    {
+      "id": "pen-clear",
+      "kind": "synthetic-pen-strokes",
+      "image": "/recognition-samples/pen-clear.png",
+      "reference": "Appointment: 18 November 2026\nFollow-up: 25 November 2026\nDocument expires: 30 November 2026"
+    },
+    {
+      "id": "pen-difficult",
+      "kind": "synthetic-pen-strokes",
+      "image": "/recognition-samples/pen-difficult.png",
+      "reference": "Appointment: 18 November 2026\nFollow-up: 25 November 2026\nDocument expires: 30 November 2026"
+    },
+    {
+      "id": "pen-rotated",
+      "kind": "synthetic-pen-strokes",
+      "image": "/recognition-samples/pen-rotated.png",
+      "reference": "Appointment: 18 November 2026\nFollow-up: 25 November 2026\nDocument expires: 30 November 2026"
+    },
+    {
+      "id": "pen-numeric",
+      "kind": "synthetic-pen-strokes",
+      "image": "/recognition-samples/pen-numeric.png",
+      "reference": "Appointment: 18/11/2026\nFollow-up: 25-11-2026\nDocument expires: 2026-11-30"
+    },
+    {
+      "id": "pen-ambiguous",
+      "kind": "synthetic-pen-strokes",
+      "image": "/recognition-samples/pen-ambiguous.png",
+      "reference": "Document expires: 03/04/2027\nFollow-up: ?\nAppointment: ?"
+    },
+    {
+      "id": "pen-illegible",
+      "kind": "synthetic-pen-strokes",
+      "image": "/recognition-samples/pen-illegible.png",
+      "reference": "Document expires: ???\nFollow-up: ???\nAppointment: ???"
+    },
+    {
+      "id": "printed-control",
+      "kind": "printed",
+      "image": "/recognition-samples/printed-control.png",
+      "reference": "Appointment: 18 November 2026\nFollow-up: 25 November 2026\nDocument expires: 30 November 2026"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+# Netlify configuration for the FamilyVault PWA.
+#
+# The published site is the browser-encrypted vault built from ./pwa — a static
+# export with no server runtime, no API routes and no database. Netlify only
+# hosts files here; it never sees a document, a passphrase or a key.
+#
+# The server-side app in ./src is NOT deployed by this configuration.
+#
+# Manual equivalent, from the repository root:
+#   npm run build:pwa
+#   npx netlify deploy --prod --dir=pwa/out
+
+[build]
+  command = "npm run build:pwa"
+  publish = "pwa/out"
+
+[build.environment]
+  # Next.js 16 needs Node 20.9+; 22 is Netlify's current LTS.
+  NODE_VERSION = "22"
+
+# Security headers are shipped as a real file (pwa/public/_headers → pwa/out/_headers)
+# so they apply to local previews too, and Netlify picks them up from the publish root.

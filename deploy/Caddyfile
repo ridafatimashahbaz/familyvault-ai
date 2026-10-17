@@ -1,0 +1,32 @@
+# FamilyVault AI — Caddy reverse proxy configuration.
+#
+# Caddy obtains and renews TLS certificates automatically for SITE_ADDRESS.
+# Set SITE_ADDRESS in .env to your domain (e.g. vault.example.com). If it is
+# left as "localhost", Caddy issues an internal (self-signed) certificate,
+# which is fine for a local test run.
+#
+# The app never terminates TLS and is never exposed directly; Caddy forwards
+# the real client IP and scheme so the app can set secure session cookies.
+
+{$SITE_ADDRESS:localhost} {
+	encode zstd gzip
+
+	# HSTS: once a browser sees this over HTTPS it will refuse plain HTTP for
+	# two years. Only sent on the HTTPS site, so local HTTP tests are unaffected.
+	header {
+		Strict-Transport-Security "max-age=63072000; includeSubDomains"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		X-Content-Type-Options "nosniff"
+		-Server
+	}
+
+	reverse_proxy app:3000 {
+		header_up X-Forwarded-Proto {scheme}
+		header_up X-Real-IP {remote_host}
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}

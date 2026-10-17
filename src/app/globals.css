@@ -1,0 +1,315 @@
+@import "tailwindcss";
+
+/**
+ * Design tokens.
+ *
+ * Two themes drive every colour in the app. The theme is a class on <html>
+ * (`.dark`) written from a cookie before first paint, so there is no flash.
+ *
+ * The trick that keeps components free of per-mode `dark:` noise:
+ *
+ *  - The `ink` ramp is a *lightness* ramp and is inverted under `.dark`, so
+ *    every existing `bg-ink-*` / `text-ink-*` / `border-ink-*` reads correctly
+ *    in both modes with no component changes.
+ *  - `brand` keeps fixed anchors (buttons, the marketing hero) that always sit
+ *    behind white text; only its pale tints (50/100/200) swap, because those
+ *    are used as chip/tile backgrounds.
+ *  - `accent` is the interactive text colour: dark teal in light mode, mint in
+ *    dark mode, so links stay legible on either canvas.
+ *
+ * Fonts are the system stack so the app needs no network access at build or run
+ * time; the Urdu faces below are only used once a reader switches language.
+ */
+
+/* The theme swap. `:where()` keeps specificity at zero so any utility can win. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------- static -- */
+
+@theme {
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "Noto Sans", "Noto Naskh Arabic", "Noto Nastaliq Urdu", sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  --radius-card: 0.75rem;
+
+  --shadow-card: 0 1px 2px 0 rgb(16 24 40 / 0.05);
+  --shadow-raised: 0 8px 24px -8px rgb(16 24 40 / 0.16);
+
+  /* Brand anchors: fixed in both themes because they sit behind white text. */
+  --color-brand-300: #7ccfbd;
+  --color-brand-400: #46b39e;
+  --color-brand-500: #239784;
+  --color-brand-600: #16796b;
+  --color-brand-700: #146157;
+  --color-brand-800: #144d46;
+  --color-brand-900: #13403b;
+  --color-brand-950: #072422;
+}
+
+/* -------------------------------------------------------------- light mode -- */
+
+:root {
+  color-scheme: light;
+
+  --fv-surface: #ffffff;
+  --fv-canvas: #f7f8fa;
+
+  --fv-ink-50: #f6f7f9;
+  --fv-ink-100: #eceef2;
+  --fv-ink-200: #d5d9e2;
+  --fv-ink-300: #b1b9c9;
+  --fv-ink-400: #8792ab;
+  --fv-ink-500: #697591;
+  --fv-ink-600: #545e78;
+  --fv-ink-700: #454d61;
+  --fv-ink-800: #3b4152;
+  --fv-ink-900: #20242d;
+  --fv-ink-950: #14161c;
+
+  --fv-brand-50: #effaf7;
+  --fv-brand-100: #d7f2ea;
+  --fv-brand-200: #b0e4d6;
+
+  --fv-accent: #146157;
+  --fv-accent-strong: #13403b;
+
+  --fv-info-surface: #f0f9ff;
+  --fv-info-border: #bae6fd;
+  --fv-info-ink: #0c4a6e;
+  --fv-info: #0284c7;
+  --fv-success-surface: #ecfdf5;
+  --fv-success-border: #a7f3d0;
+  --fv-success-ink: #065f46;
+  --fv-success: #059669;
+  --fv-warning-surface: #fffbeb;
+  --fv-warning-border: #fde68a;
+  --fv-warning-ink: #78350f;
+  --fv-warning: #d97706;
+  --fv-danger-surface: #fef2f2;
+  --fv-danger-border: #fecaca;
+  --fv-danger-ink: #7f1d1d;
+  --fv-danger: #dc2626;
+}
+
+/* --------------------------------------------------------------- dark mode -- */
+
+.dark {
+  color-scheme: dark;
+
+  --fv-surface: #171a21;
+  --fv-canvas: #0f1116;
+
+  /* Inverted lightness ramp: index 50 is now the darkest, 950 the lightest. */
+  --fv-ink-50: #101218;
+  --fv-ink-100: #1a1e26;
+  --fv-ink-200: #272c37;
+  --fv-ink-300: #39404e;
+  --fv-ink-400: #525b6c;
+  --fv-ink-500: #737d90;
+  --fv-ink-600: #949db0;
+  --fv-ink-700: #b4bccb;
+  --fv-ink-800: #d0d6e1;
+  --fv-ink-900: #e8ebf1;
+  --fv-ink-950: #f6f7f9;
+
+  /* Pale brand tints become deep teal surfaces for chips and tiles. */
+  --fv-brand-50: #0d2b27;
+  --fv-brand-100: #123832;
+  --fv-brand-200: #17524a;
+
+  --fv-accent: #5fd0c0;
+  --fv-accent-strong: #93e7d8;
+
+  --fv-info-surface: #0b2534;
+  --fv-info-border: #14506e;
+  --fv-info-ink: #bae6fd;
+  --fv-info: #38bdf8;
+  --fv-success-surface: #08251c;
+  --fv-success-border: #12503c;
+  --fv-success-ink: #a7f3d0;
+  --fv-success: #34d399;
+  --fv-warning-surface: #2c2109;
+  --fv-warning-border: #6b4a12;
+  --fv-warning-ink: #fde68a;
+  --fv-warning: #fbbf24;
+  --fv-danger-surface: #2a1416;
+  --fv-danger-border: #5c2429;
+  --fv-danger-ink: #fecaca;
+  --fv-danger: #f87171;
+
+  /*
+   * Tailwind's default status scales are still used in a few stray spots
+   * (inline error text, progress dots). They reference these variables, so
+   * remapping them here makes those usages dark-correct without any edits.
+   */
+  --color-red-50: #2a1416;
+  --color-red-100: #3a1a1d;
+  --color-red-200: #5c2429;
+  --color-red-300: #7f2f36;
+  --color-red-400: #a63a43;
+  --color-red-500: #ef4444;
+  --color-red-600: #f87171;
+  --color-red-700: #fca5a5;
+  --color-red-800: #fecaca;
+  --color-red-900: #fee2e2;
+  --color-red-950: #fff1f2;
+
+  --color-amber-50: #2c2109;
+  --color-amber-100: #3d2c0c;
+  --color-amber-200: #6b4a12;
+  --color-amber-300: #8a6118;
+  --color-amber-500: #f59e0b;
+  --color-amber-600: #fbbf24;
+  --color-amber-700: #fcd34d;
+  --color-amber-800: #fde68a;
+  --color-amber-900: #fef3c7;
+  --color-amber-950: #fffbeb;
+
+  --color-emerald-50: #08251c;
+  --color-emerald-100: #0c3527;
+  --color-emerald-200: #12503c;
+  --color-emerald-300: #17694f;
+  --color-emerald-500: #10b981;
+  --color-emerald-600: #34d399;
+  --color-emerald-700: #6ee7b7;
+  --color-emerald-800: #a7f3d0;
+  --color-emerald-900: #d1fae5;
+  --color-emerald-950: #ecfdf5;
+
+  --color-sky-50: #0b2534;
+  --color-sky-200: #14506e;
+  --color-sky-500: #38bdf8;
+  --color-sky-600: #7dd3fc;
+  --color-sky-800: #bae6fd;
+  --color-sky-900: #e0f2fe;
+  --color-sky-950: #f0f9ff;
+}
+
+/* ------------------------------------------------------- swappable tokens -- */
+
+@theme inline {
+  --color-surface: var(--fv-surface);
+  --color-canvas: var(--fv-canvas);
+  --color-accent: var(--fv-accent);
+  --color-accent-strong: var(--fv-accent-strong);
+
+  --color-ink-50: var(--fv-ink-50);
+  --color-ink-100: var(--fv-ink-100);
+  --color-ink-200: var(--fv-ink-200);
+  --color-ink-300: var(--fv-ink-300);
+  --color-ink-400: var(--fv-ink-400);
+  --color-ink-500: var(--fv-ink-500);
+  --color-ink-600: var(--fv-ink-600);
+  --color-ink-700: var(--fv-ink-700);
+  --color-ink-800: var(--fv-ink-800);
+  --color-ink-900: var(--fv-ink-900);
+  --color-ink-950: var(--fv-ink-950);
+
+  --color-brand-50: var(--fv-brand-50);
+  --color-brand-100: var(--fv-brand-100);
+  --color-brand-200: var(--fv-brand-200);
+
+  --color-info-surface: var(--fv-info-surface);
+  --color-info-border: var(--fv-info-border);
+  --color-info-ink: var(--fv-info-ink);
+  --color-info: var(--fv-info);
+  --color-success-surface: var(--fv-success-surface);
+  --color-success-border: var(--fv-success-border);
+  --color-success-ink: var(--fv-success-ink);
+  --color-success: var(--fv-success);
+  --color-warning-surface: var(--fv-warning-surface);
+  --color-warning-border: var(--fv-warning-border);
+  --color-warning-ink: var(--fv-warning-ink);
+  --color-warning: var(--fv-warning);
+  --color-danger-surface: var(--fv-danger-surface);
+  --color-danger-border: var(--fv-danger-border);
+  --color-danger-ink: var(--fv-danger-ink);
+  --color-danger: var(--fv-danger);
+}
+
+/* ------------------------------------------------------------------- base -- */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--fv-canvas);
+    color: var(--fv-ink-900);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv02", "cv03", "cv04";
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 2px;
+  }
+
+  /* Scrollbars are visible but quiet, so long OCR transcripts stay readable. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--fv-ink-300) transparent;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .preserve-lines {
+    white-space: pre-line;
+  }
+
+  /* Chevrons and other directional glyphs need mirroring under RTL. */
+  .flip-rtl:where([dir="rtl"] *) {
+    transform: scaleX(-1);
+  }
+
+  /* The select chevron is a background image pinned right; move it to the
+     inline-end edge under RTL. !important because the position is inline. */
+  .flip-chevron:where([dir="rtl"] *) {
+    background-position: left 0.6rem center !important;
+  }
+}
+
+@keyframes fv-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fv-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-fade-up {
+  animation: fv-fade-up 0.22s ease-out both;
+}
+
+.animate-toast-in {
+  animation: fv-toast-in 0.18s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-toast-in {
+    animation: none;
+  }
+}
