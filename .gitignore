@@ -56,3 +56,6 @@ prisma/dev.db-journal
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Netlify generated output and local build caches
+/.netlify/
